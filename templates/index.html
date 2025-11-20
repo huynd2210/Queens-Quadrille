@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queen's Quadrille Solver</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>Queen's Quadrille Solver</h1>
+            <p class="subtitle">Solve the classic chess puzzle</p>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Left-side Control Panel -->
+            <div class="control-panel">
+                <!-- Solution Search Section -->
+                <div class="search-section">
+                    <h3>Puzzle Controls</h3>
+
+                    <!-- Target Selection -->
+                    <div class="input-group">
+                        <label for="target-select">Target Strategy:</label>
+                        <select id="target-select">
+                            <option value="corners">Corners (0, 15)</option>
+                            <option value="custom">Custom Targets</option>
+                        </select>
+                    </div>
+
+                    <!-- Custom Targets Input (Hidden by default) -->
+                    <div id="custom-target-group" class="input-group hidden">
+                        <label for="custom-targets">Custom Targets (comma separated):</label>
+                        <input type="text" id="custom-targets" placeholder="e.g. 0, 3, 15" value="0, 15">
+                    </div>
+
+                    <!-- Generate Button -->
+                    <div class="search-controls">
+                        <div class="button-group">
+                            <button id="random-btn" class="btn-primary">Generate Random Board</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Target Progress Panel (New) -->
+                <div class="target-progress-panel">
+                    <h3>Target Progress</h3>
+                    <div id="target-list" class="target-list">
+                        <!-- Target items will be injected here -->
+                        <div class="target-placeholder">No targets active</div>
+                    </div>
+                </div>
+
+                <!-- Board Editor Section -->
+                <div class="editor-section">
+                    <h3>Board Editor</h3>
+                    <div class="editor-controls">
+                        <button id="edit-mode-btn" class="btn-secondary">Edit Board</button>
+
+                        <!-- Piece Palette for Editor Mode -->
+                        <div id="piece-palette" class="piece-palette hidden">
+                            <h4>Select Piece to Place:</h4>
+                            <div class="piece-buttons">
+                                <button class="piece-btn active" data-piece="Q">
+                                    <img src="https://lichess1.org/assets/piece/cburnett/wQ.svg" class="piece-icon">
+                                    Queen
+                                </button>
+                                <button class="piece-btn" data-piece="K">
+                                    <img src="https://lichess1.org/assets/piece/cburnett/wK.svg" class="piece-icon">
+                                    King
+                                </button>
+                                <button class="piece-btn" data-piece="R">
+                                    <img src="https://lichess1.org/assets/piece/cburnett/wR.svg" class="piece-icon">
+                                    Rook
+                                </button>
+                                <button class="piece-btn" data-piece="B">
+                                    <img src="https://lichess1.org/assets/piece/cburnett/wB.svg" class="piece-icon">
+                                    Bishop
+                                </button>
+                                <button class="piece-btn" data-piece="N">
+                                    <img src="https://lichess1.org/assets/piece/cburnett/wN.svg" class="piece-icon">
+                                    Knight
+                                </button>
+                                <button class="piece-btn" data-piece=" ">Empty</button>
+                            </div>
+
+                            <div class="editor-actions">
+                                <button id="clear-board-btn" class="btn-warning">Clear Board</button>
+                                <button id="solve-board-btn" class="btn-success">Solve This Board</button>
+                                <button id="exit-edit-btn" class="btn-secondary">View Mode</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Playback Controls Section -->
+                <div id="playback-section" class="playback-section">
+                    <h3>Solution Playback</h3>
+                    <div class="solution-controls">
+                        <div class="playback-controls">
+                            <button id="first-btn" title="First Step">⏪</button>
+                            <button id="prev-btn" title="Previous Step">⏮</button>
+                            <button id="play-pause-btn" title="Play/Pause">▶️</button>
+                            <button id="next-btn" title="Next Step">⏭</button>
+                            <button id="last-btn" title="Last Step">⏩</button>
+                        </div>
+
+                        <!-- Speed Control Slider -->
+                        <div class="speed-controls">
+                            <label for="speed-slider">Speed:</label>
+                            <div class="speed-slider-container">
+                                <span class="speed-label">0.5x</span>
+                                <input type="range" id="speed-slider" min="250" max="2000" value="1250" step="50"
+                                    title="Animation speed: 0.5x (slow) to 4x (fast)">
+                                <span class="speed-label">4x</span>
+                            </div>
+                            <span id="speed-display">1.00s (1.0x)</span>
+                        </div>
+
+                        <!-- Progress Bar for Solution Playback -->
+                        <div class="progress-bar">
+                            <div id="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Solution Information -->
+                <div class="solution-info">
+                    <h3>Solution Status</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Total Moves:</span>
+                            <span id="current-moves">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Current Step:</span>
+                            <span id="current-step">- / -</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Solve Time:</span>
+                            <span id="solve-time">- ms</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right-side Game Area -->
+            <div class="game-area">
+                <!-- Chess Board Container -->
+                <div class="board-container">
+                    <div class="board-header">
+                        <h2 id="board-title">Game Board</h2>
+                        <div class="goal-indicator">
+                            <span id="board-mode-indicator">Goal: Move the Queen (♛) to targets</span>
+                        </div>
+                    </div>
+                    <div id="chess-board" class="chess-board">
+                        <!-- Board squares will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <!-- Error Message Display -->
+        <div id="error-message" class="error-message hidden">
+            <span id="error-text"></span>
+            <button id="close-error">×</button>
+        </div>
+    </div>
+
+    <!-- Main JavaScript file -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
