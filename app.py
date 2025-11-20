@@ -106,6 +106,10 @@ def solve():
     if not board:
         return jsonify({"error": "No board provided"}), 400
         
+    # If board is a list (from previous solution steps), join it
+    if isinstance(board, list):
+        board = "".join(board)
+        
     # Construct command
     cmd = [SOLVER_PATH, board]
     

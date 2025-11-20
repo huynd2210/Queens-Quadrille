@@ -312,6 +312,10 @@ class QueensQuadrilleExplorer {
     getTargets() {
         if (this.currentTargetMode === 'corners') {
             return [0, 15];
+        } else if (this.currentTargetMode === 'all_corners') {
+            return [0, 3, 12, 15];
+        } else if (this.currentTargetMode === 'perimeter') {
+            return [0, 1, 2, 3, 4, 7, 8, 11, 12, 13, 14, 15];
         } else {
             const val = this.customTargetsInput.value;
             if (!val) return [];
