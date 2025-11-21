@@ -5,7 +5,14 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
-SOLVER_PATH = os.path.join(os.getcwd(), "queens_quadrille_solver.exe")
+import platform
+
+if platform.system() == "Windows":
+    SOLVER_NAME = "queens_quadrille_solver.exe"
+else:
+    SOLVER_NAME = "queens_quadrille_solver"
+
+SOLVER_PATH = os.path.join(os.getcwd(), SOLVER_NAME)
 
 def parse_solver_output(output):
     lines = output.strip().split('\n')
