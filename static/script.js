@@ -115,7 +115,8 @@ class QueensQuadrilleExplorer {
             btn.addEventListener('click', () => {
                 this.pieceBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                this.selectedPiece = btn.dataset.piece;
+                const piece = btn.dataset.piece;
+                this.selectedPiece = (piece === 'empty') ? ' ' : piece;
             });
         });
 
@@ -501,6 +502,7 @@ class QueensQuadrilleExplorer {
     }
 
     enterEditMode() {
+        console.log("Entering edit mode");
         this.editMode = true;
         this.piecePalette.classList.remove('hidden');
         this.editModeBtn.textContent = 'View Mode';
@@ -529,6 +531,7 @@ class QueensQuadrilleExplorer {
     }
 
     handleSquareClick(position) {
+        console.log("Square clicked:", position, "EditMode:", this.editMode, "Selected:", this.selectedPiece);
         if (!this.editMode) return;
 
         const boardArray = this.editorBoardState.split('');

@@ -334,6 +334,7 @@ button {
     max-width: 85%;
     max-height: 85%;
     object-fit: contain;
+    pointer-events: none;
 }
 
 .chess-square .lichess-piece:hover {
