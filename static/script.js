@@ -71,6 +71,11 @@ class QueensQuadrilleExplorer {
         this.errorMessage = document.getElementById('error-message');
         this.errorText = document.getElementById('error-text');
         this.closeErrorBtn = document.getElementById('close-error');
+
+        // Rules Modal
+        this.rulesBtn = document.getElementById('view-rules-btn');
+        this.rulesModal = document.getElementById('rules-modal');
+        this.closeRulesBtn = document.getElementById('close-rules');
     }
 
     bindEventListeners() {
@@ -122,6 +127,31 @@ class QueensQuadrilleExplorer {
 
         // Error
         this.closeErrorBtn.addEventListener('click', () => this.hideError());
+
+        // Rules Modal
+        if (this.rulesBtn) {
+            this.rulesBtn.addEventListener('click', () => {
+                this.rulesModal.classList.remove('hidden');
+            });
+        }
+        if (this.closeRulesBtn) {
+            this.closeRulesBtn.addEventListener('click', () => {
+                this.rulesModal.classList.add('hidden');
+            });
+        }
+        window.addEventListener('click', (event) => {
+            if (event.target === this.rulesModal) {
+                this.rulesModal.classList.add('hidden');
+            }
+        });
+
+        // Auto-show rules on first visit
+        if (!localStorage.getItem('queensQuadrilleRulesSeen')) {
+            if (this.rulesModal) {
+                this.rulesModal.classList.remove('hidden');
+                localStorage.setItem('queensQuadrilleRulesSeen', 'true');
+            }
+        }
     }
 
     initializeBoard() {

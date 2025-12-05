@@ -13,7 +13,7 @@
         <!-- Header Section -->
         <header class="header">
             <h1>Queen's Quadrille Solver</h1>
-            <p class="subtitle">Solve the classic chess puzzle</p>
+            <button id="view-rules-btn" class="btn-secondary" style="margin-top: 10px;">View Rules</button>
         </header>
 
         <!-- Main Content Area -->
@@ -178,6 +178,22 @@
         <div id="error-message" class="error-message hidden">
             <span id="error-text"></span>
             <button id="close-error">×</button>
+        </div>
+    </div>
+    <!-- Rules Modal -->
+    <div id="rules-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="close-rules" class="close-btn">&times;</span>
+            <h2>Queen's Quadrille Rules</h2>
+            <div class="rules-text">
+                <p>Queen's Quadrille is a solitaire chess puzzle, where the goal is to move the Queen to a set of
+                    pre-determined squares on a 4x4 chess board.</p>
+                <p>The standard chess pieces, with the exception of the pawns and one queen is placed randomly on the
+                    board. Ignoring color, capture and checks. The player can move a piece to the empty spot using legal
+                    chess moves.</p>
+                <p>This is a solver that solves the puzzle, simply input the board and press play on the solution
+                    playback. (Actually playing the game is not yet supported)</p>
+            </div>
         </div>
     </div>
 
